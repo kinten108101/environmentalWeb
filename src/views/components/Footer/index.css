@@ -1,0 +1,18 @@
+.mfooter {
+	background-color: #80B180;
+	font-size: 0.6em;
+	color: #fff;
+}
+
+.mfooter .schoolShort {
+	font-weight: bolder;
+}
+
+.mfooter .social {
+	padding-right: 24px;
+}
+
+.mfooter .social > * {
+	margin-left: 6px;
+}
+

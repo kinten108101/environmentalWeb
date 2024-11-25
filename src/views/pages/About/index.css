@@ -1,0 +1,15 @@
+.manifest {
+	background-color: rgba(255,255,255,90%);
+	border-radius: 12px;
+	box-shadow: 0px 2px 4px 4px rgba(0,0,0,30%);
+	padding: 12px;
+	width: 60vw;
+	font-size: 0.9em;
+}
+
+.manifest h1 {
+	display: flex;
+	justify-content: center;
+	text-transform: uppercase;
+	font-weight: bolder;
+}

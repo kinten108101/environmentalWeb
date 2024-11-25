@@ -1,0 +1,9 @@
+.mresults main > * {
+	/* overflow: hidden; */
+}
+
+.mresults .selection {
+	display: flex;
+	justify-content: center;
+}
+

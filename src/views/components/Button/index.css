@@ -1,0 +1,13 @@
+button.mbutton {
+	text-transform: uppercase;
+	color: #fff;
+	background-color: #2E8B57;
+	font-weight: bolder;
+	padding: 0 12px;
+	border-radius: 12px;
+}
+
+button.mbutton.pill {
+	border-radius: 9999px;
+	padding: 8px 20px;
+}
