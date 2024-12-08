@@ -24,7 +24,7 @@ const Home = function () {
 					backgroundSize: "cover"
 				}}
 			>
-				<Button className="pill"><a href="./login">Start now</a></Button>
+				<Button className="pill"><a href="./database">Start now</a></Button>
 			</div>
 			<Footer
 				style={{

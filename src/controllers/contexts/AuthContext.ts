@@ -1,5 +1,10 @@
 import { createContext } from "react";
 
-const AuthContext = createContext({});
+export type Account =
+	{	userName: string
+	;	password: string
+	}
+
+const AuthContext = createContext(null as null | undefined | Account);
 
 export default AuthContext;

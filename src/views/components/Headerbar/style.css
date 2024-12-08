@@ -20,3 +20,16 @@ nav > .shortcuts > * {
 	display: flex;
 	align-items: center;
 }
+
+nav > .avatar {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+nav > .avatar > button#account {
+	background-color: blue;
+	min-width: calc(36px);
+	min-height: calc(36px);
+	border-radius: 999px;
+}

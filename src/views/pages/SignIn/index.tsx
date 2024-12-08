@@ -4,27 +4,20 @@ import Headerbar from "../../components/Headerbar"
 import Footer from "../../components/Footer"
 import { useState } from "react";
 import bulb from "../../../assets/bulb.png"
+import useAuthenticate from "../../../controllers/hooks/useAuthenticate";
+import { useNavigate } from "react-router-dom";
 
 const SignIn = function () {
+	const { login } = useAuthenticate();
 	const [email, setEmail] = useState("")
 	const [password, setPassword] = useState("")
 	const [errorMessage, setErrorMessage] = useState(false);
+	const navigate = useNavigate();
 
 	const handleSubmit = (event: React.FormEvent) => {
 		event.preventDefault();
-		// Mock credentials
-		const validCredentials = {
-			email: "user@example.com",
-			password: "password123",
-		};
-	  
-		// Validate user input
-		if (email === validCredentials.email && password === validCredentials.password) {
-			alert("Login successful!");
-			setErrorMessage(false); // Hide error message
-		} else {
-			setErrorMessage(true); // Show error message
-		}
+		login(email, password);
+		navigate("/database");
 	};
 
 	return (
@@ -136,7 +129,7 @@ const SignIn = function () {
 				<Button
 					className="Login"
 				>
-					<a href="/database"> Log in</a> 
+					Log in
 				</Button>
 			</form>
 			{errorMessage ? (

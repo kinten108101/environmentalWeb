@@ -10,6 +10,7 @@ import ProcessRoute from "./routes/ProcessRoute";
 import DatabaseLocation from "./views/pages/DatabaseLocation";
 import HealthChecker from "./controllers/providers/HealthChecker";
 import Loading from "./views/pages/Loading";
+import RequireAuth from "./controllers/providers/RequireAuth";
 
 const AppRoutes = function () {
 	return (
@@ -18,8 +19,16 @@ const AppRoutes = function () {
 			<Route path="/about" element={<About />} />
 			<Route path="/sign-in" element={<SignIn />} />
 			<Route path="/login" element={<ConfirmSignIn />}/>
-			<Route path="/process/:sessionId" element={<ProcessRoute />} />
-			<Route path="/database" element={<DatabaseLocation />}/>
+			<Route path="/process/:sessionId" element={
+				<RequireAuth fallbackPath="/login">
+					<ProcessRoute />
+				</RequireAuth>
+			} />
+			<Route path="/database" element={
+				<RequireAuth fallbackPath="/login">
+					<DatabaseLocation />
+				</RequireAuth>
+			}/>
 			<Route path="/loading" element={<Loading/>}/>
 		</Routes>
 	);
@@ -29,7 +38,7 @@ const App = () => layerElements([
 	x => <HealthChecker>{x}</HealthChecker>,
 	x => <FakeAuth>{x}</FakeAuth>,
 	x => <BrowserRouter>{x}</BrowserRouter>,
-	() => <AppRoutes />
+	_ => <AppRoutes />
 ]);
 
 export default App
