@@ -11,6 +11,9 @@
   "description": "",
   "dependencies": {
     "express": "^4.21.1",
-    "pg": "^8.13.1"
+    "pg": "^8.13.1",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "yaml": "^2.6.1"
   }
 }

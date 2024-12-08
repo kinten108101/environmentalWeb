@@ -9,18 +9,12 @@ export interface CountryGraphData {
 	progress: number;
 }
 
-export type OnClick = (element: SVGElement, countryName: string, data?: CountryGraphData) => void;
-export interface StyleConfig {
-		setStrokeColor(str: string): void;
-		setFillColor(str: string): void;
-		setSize(size: number): void;
-}
-export type OnDataChange = (progress: number, config: StyleConfig) => void;
+export type OnDataChange = Parameters<typeof WorldCartogram>[0]["onDataChange"];
 
-const OnClickContext = createContext(null as null | OnClick);
-const OnDataChangeContext = createContext(null as null | OnDataChange);
-
-const onDataChangeDefault: OnDataChange = function (progress, config) {
+const onDataChangeDefault = function (
+	progress: number,
+	config: StyleConfig
+) {
 	const c = 27 + (100 - progress) * 0.8;
 	const d = (300 + (100 - progress) * 1.0) % 360;
 	const e = 100 - (100 - progress) * 0.5;
@@ -30,18 +24,34 @@ const onDataChangeDefault: OnDataChange = function (progress, config) {
 	config.setSize(progress);
 };
 
-const WorldCartogram = Object.assign(function (
-{ data = {},
+interface StyleConfig {
+		setStrokeColor(str: string): void;
+		setFillColor(str: string): void;
+		setSize(size: number): void;
+}
+
+/**
+ * The world map where each tile is a selectable country.
+ *
+ * @warning Current implementation is lazily loaded (see the
+ * DOM check below) Further improvement is needed
+ **/
+const WorldCartogram = function (
+{	data = {},
+	/** 
+	 * Default data change handler is provided, but you can
+     * override this to customize the style of the graph 
+	 **/
 	onDataChange = onDataChangeDefault,
 	...otherProps
 }:
 {	data?: { [countryName: string]: CountryGraphData | undefined };
-	onClick?: OnClick;
+	/** Handle when a tile is clicked */
+	onClick?: (element: SVGElement, countryName: string, data?: CountryGraphData) => void;
+	/** Handle when lazy loading is finished */
 	onFinishedLoading?: () => void;
-	onDataChange?: OnDataChange;
+	onDataChange?: (progress: number, config: StyleConfig) => void;
 }) {
-	const onClickOverride = useContext(OnClickContext);
-	const onDataChangeOverride = useContext(OnDataChangeContext);
 	const container = useRef<HTMLDivElement>(null);
 
 	useEffect(function() {
@@ -52,8 +62,7 @@ const WorldCartogram = Object.assign(function (
 			const countryName = x.id;
 			const resultOfCountry = data[countryName];
 			x.onclick = function () {
-				const fn = onClickOverride || otherProps.onClick;
-				fn?.(x, countryName, resultOfCountry);
+				otherProps.onClick?.(x, countryName, resultOfCountry);
 			};
 			const progress = (function() {
 				if (resultOfCountry === undefined) {
@@ -64,8 +73,7 @@ const WorldCartogram = Object.assign(function (
 				}
 			})();
 			x.style.rx = "0.5px";
-			const fnData = onDataChangeOverride || onDataChange;
-			fnData?.(progress, {
+			onDataChange?.(progress, {
 				setStrokeColor(str: string) {
 					x.style.stroke = str;
 				},
@@ -93,9 +101,7 @@ const WorldCartogram = Object.assign(function (
 		data,
 		otherProps.onClick,
 		otherProps.onFinishedLoading,
-		onClickOverride,
 		onDataChange,
-		onDataChangeOverride,
 	]);
 
 	return (
@@ -105,9 +111,6 @@ const WorldCartogram = Object.assign(function (
 			<Countries />
 		</div>
 	);
-}, {
-	OnClickContext,
-	OnDataChangeContext,
-});
+};
 
 export default WorldCartogram;

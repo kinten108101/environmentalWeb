@@ -3,14 +3,21 @@ const controller = require('./controller')
 
 const router = Router()
 
-// router.get("/", (req, res)=>{
-//     res.send("using api routes")
-// })
-router.get("/employee/", controller.getEmployee)
 router.get("/report/", controller.getReport)
+router.get("/employee/", controller.getEmployee)
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     description: Get info an employee by an SSN
+ */ 
 router.get("/employee/:ssn", controller.getEmployeeById)
+/**
+ * @openapi
+ * /:
+ *   get:
+ *     description: Get UUID of a report / snapshot /  recording
+ */ 
 router.get("/report/:uuid", controller.getReportById)
-router.delete("/employee/:ssn", controller.removeEmployee)
-router.delete("/report/:uuid", controller.removeReport)
 
 module.exports=router
