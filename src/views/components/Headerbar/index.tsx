@@ -4,6 +4,7 @@ import { useContext, useState } from "react";
 import AuthContext from "../../../controllers/contexts/AuthContext";
 import Popover from "@mui/material/Popover";
 import useAuthenticate from "../../../controllers/hooks/useAuthenticate";
+import avatar from "../../../assets/avatar.jpg";
 
 const Item = function (
 {	href,
@@ -88,7 +89,7 @@ const Headerbar = function (
 			case undefined: return null;
 			default: return (
 				<>
-					<button id="account" onClick={e => setAccountMenuPopover(e.currentTarget)}></button>
+					<img id="account" src={avatar} onClick={e => setAccountMenuPopover(e.currentTarget)}></img>
 					<Popover
 						anchorEl={accountMenuPopover}
 						open={accountMenuPopover !== null}
