@@ -14,7 +14,7 @@ function useAuthenticate() {
 		refresh();
 	}, [refresh]);
 
-	const logout = useCallback(function (userName: string, password: string) {
+	const logout = useCallback(function () {
 		localStorage.removeItem("token");
 		refresh();
 	}, [refresh]);
