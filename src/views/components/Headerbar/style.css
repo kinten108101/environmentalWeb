@@ -1,3 +1,13 @@
+#logo-title {
+	display: flex;
+	align-items: center;
+	color: #006400;
+	margin-left: 4px;
+	filter: drop-shadow(0px 1px rgba(0,0,0,0.1));
+	font-weight: bolder;
+	font-size: 0.8em;
+}
+
 nav {
 	background-color: #CCE0CC;
 	box-shadow: 0px 1px rgba(0,0,0,0.1);

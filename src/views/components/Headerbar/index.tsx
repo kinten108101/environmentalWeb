@@ -55,6 +55,14 @@ const Headerbar = function (
 				</a>
 			</div>
 			<div
+				id="logo-title"
+				style={{
+					gridColumnStart: "2"
+				}}
+			>
+				BK Environmental Web
+			</div>
+			<div
 				className="shortcuts"
 				style={{
 					gridColumnStart: "3",
