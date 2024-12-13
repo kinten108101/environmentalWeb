@@ -8,3 +8,5 @@ export type Account =
 const AuthContext = createContext(null as null | undefined | Account);
 
 export default AuthContext;
+
+export const RefreshContext = createContext(() => (undefined as void))

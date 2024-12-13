@@ -1,8 +1,9 @@
 import {
 	useEffect, useRef, useState, useCallback
 } from "react";
-import AuthContext, { Account } from "../contexts/AuthContext";
-import RefreshContext from "../contexts/RefreshContext";
+import AuthContext, { 
+	Account, RefreshContext 
+} from "../contexts/AuthContext";
 
 const FakeAuth = function (
 {	...otherProps

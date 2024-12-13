@@ -1,7 +1,7 @@
 import {
 	useContext, useCallback
 } from "react";
-import RefreshContext from "../contexts/RefreshContext";
+import { RefreshContext } from "../contexts/AuthContext";
 
 function useAuthenticate() {
 	const refresh = useContext(RefreshContext);
