@@ -69,9 +69,8 @@ const Headerbar = function (
 				}}
 			>
 				<Item href="/">Home</Item>
-				<Item href="/about">About us</Item>
 				<Item href="/services">Services</Item>
-				<Item href="/feedback">Feedback</Item>
+				<Item href="/about">About us</Item>
 			</div>
 			<div
 				className="avatar"
