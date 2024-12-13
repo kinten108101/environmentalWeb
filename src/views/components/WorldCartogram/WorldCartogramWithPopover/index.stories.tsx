@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { expect, userEvent, within } from '@storybook/test';
-import { Cancellable, delayMs } from "@simglobe/mutility";
+import { Cancellable, delayMs } from "../../../../controllers/utils/mutility";
 
 import Component from "./index";
 

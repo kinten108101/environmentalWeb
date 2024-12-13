@@ -1,7 +1,7 @@
 import Popover from "@mui/material/Popover";
 import { useCallback, useState } from "react";
 
-import useRecordState from "src/utils/hooks/useRecordState";
+import useRecordState from "react-nice-patterns/src/useRecordState";
 import WorldCartogram from "../index";
 
 const WorldCartogramWithPopover = function (
