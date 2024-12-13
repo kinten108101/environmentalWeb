@@ -2,6 +2,10 @@
 	/* overflow: hidden; */
 }
 
+.mresults {
+	background-color: #B6D6BD;
+}
+
 .mresults .selection {
 	display: flex;
 	justify-content: center;
