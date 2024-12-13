@@ -4,23 +4,19 @@ import Headerbar from "../../components/Headerbar"
 import Footer from "../../components/Footer"
 import { useState } from "react";
 import bulb from "../../../assets/bulb.png"
+import useSaveDatabaseInfo from "../../../controllers/hooks/useSaveDatabaseInfo";
+import { useNavigate } from "react-router-dom";
 
 const DatabaseLocation = function(){
+		const { override: overrideDbInfo } = useSaveDatabaseInfo();
+		const navigate = useNavigate();
     const [address, setAddress] = useState("")
     const [errorMessage, setErrorMessage] = useState(false)
 
     const handleSubmit = (event: React.FormEvent) => {
         event.preventDefault();
-
-        const validCredentials = {
-            address: "localhost:9999"
-        }
-
-        if(address == validCredentials.address){
-            alert('Connect to the database.');
-            setErrorMessage(false);
-        }
-        else setErrorMessage(true);
+				overrideDbInfo(address);
+				navigate("/process/xxx");
     }
     
     return(
@@ -93,7 +89,7 @@ const DatabaseLocation = function(){
                     /> 
                     </div>
                     <Button>
-                        <a href="/process/9999-1a7">Connect</a>
+                        Connect
                     </Button>
                     </form>
                     {errorMessage ? (

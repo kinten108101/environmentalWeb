@@ -11,6 +11,7 @@ import DatabaseLocation from "./views/pages/DatabaseLocation";
 import HealthChecker from "./controllers/providers/HealthChecker";
 import Loading from "./views/pages/Loading";
 import RequireAuth from "./controllers/providers/RequireAuth";
+import DatabaseInfoCache from "./controllers/providers/DatabaseInfoCache";
 
 const AppRoutes = function () {
 	return (
@@ -37,6 +38,7 @@ const AppRoutes = function () {
 const App = () => layerElements([
 	x => <HealthChecker>{x}</HealthChecker>,
 	x => <FakeAuth>{x}</FakeAuth>,
+	x => <DatabaseInfoCache>{x}</DatabaseInfoCache>,
 	x => <BrowserRouter>{x}</BrowserRouter>,
 	_ => <AppRoutes />
 ]);
