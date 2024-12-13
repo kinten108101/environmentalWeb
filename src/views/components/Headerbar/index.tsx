@@ -60,7 +60,9 @@ const Headerbar = function (
 					gridColumnStart: "2"
 				}}
 			>
-				BK Environmental Web
+				<a href="/">
+					BK Environmental Web
+				</a>
 			</div>
 			<div
 				className="shortcuts"
@@ -69,7 +71,7 @@ const Headerbar = function (
 				}}
 			>
 				<Item href="/">Home</Item>
-				<Item href="/services">Services</Item>
+				{/* <Item href="/services">Services</Item> */}
 				<Item href="/about">About us</Item>
 			</div>
 			<div
