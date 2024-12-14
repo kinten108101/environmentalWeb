@@ -33,17 +33,17 @@ const Results = function () {
 
 	const precipitationData =
 		data.dataCollection
-			.map(x => x.precipitation)
+			.map(x => x?.precipitation)
 			.slice(0, length);
 
 	const temperatureData =
 		data.dataCollection
-			.map(x => x.temperature)
+			.map(x => x?.temperature)
 			.slice(0, length);
 
 	const windData =
 		data.dataCollection
-			.map(x => x.windSpeed)
+			.map(x => x?.windSpeed)
 			.slice(0, length);
 
 	return (
@@ -59,12 +59,19 @@ const Results = function () {
 				style={{
 					gridArea: "main",
 					display: "grid",
-					grid: `
+					gridOld: `
 						". title     title     title     ." max-content
 						". selection selection selection ." max-content
 						". basic1    basic2    basic3    ." max-content
 						". compare   compare   compare   ." max-content
 					/ 20px minmax(0,1fr) minmax(0,1fr) minmax(0,1fr) 20px
+					`,
+					grid: `
+						". title     title     title     ." max-content
+						". . .    .    ." max-content
+						". basic2   basic2    basic3    ." max-content
+						". compare   compare    compare    ." max-content
+					/ 20px minmax(0,3fr) minmax(0,1fr) minmax(0,1fr) 20px
 					`,
 				}}
 			>
@@ -74,7 +81,7 @@ const Results = function () {
 						fontWeight: "bolder"
 					}}
 				>
-					<h1>Results</h1>
+					<h1>Results (Station AAAAA)</h1>
 				</div>
 				<div
 					className="selection"
@@ -86,41 +93,51 @@ const Results = function () {
 					<WorldCartogramSelector />
 				</div>
 				<div
-					style={{ gridArea: "basic1" }}
+					style={{ gridArea: "basic1", display: "none" }}
 				>
+					<h3>Precipitation</h3>
 					<BarChart
 						series={[
 							{ data: precipitationData },
 						]}
-						height={290}
+						height={100}
 						margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
 					/>
 				</div>
 				<div
 					style={{ gridArea: "basic2" }}
 				>
+					<h3>Temperature</h3>
 					<LineChart
 						series={[
-							{ data: temperatureData },
+							{ 
+								label: 'Temperature (Celsius)',
+								data: temperatureData 
+							},
 						]}
-						height={290}
+						height={100}
 						margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
 					/>
 				</div>
 				<div
 					style={{ gridArea: "basic3" }}
 				>
+					<h3>Wind</h3>
 					<LineChart
 						series={[
-							{ data: windData },
+							{ 
+								label: 'Wind speed (km/h)',
+								data: windData 
+							},
 						]}
-						height={290}
+						height={100}
 						margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
 					/>
 				</div>
 				<div
 					style={{ gridArea: "compare" }}
 				>
+					<h3>All</h3>
 					<ResponsiveChartContainer
 						series={[
 							{ type: "bar",

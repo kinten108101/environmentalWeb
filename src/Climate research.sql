@@ -38,7 +38,7 @@ CREATE TABLE EMPLOYEE(
 );
 
 CREATE TABLE REPORT(
-	UUID			INT				NOT NULL,
+	UUID			SERIAL				NOT NULL,
 	Timestamp		Date,
 	Temperature		FLOAT,					-- if have temp measure
 	VeloX			FLOAT,					-- if have wind measure
@@ -102,34 +102,187 @@ INSERT INTO EMPLOYEE (SSN, FName, Minit, LName, StationID) VALUES
 	(18, 'Nguyen', 'Van', 'P', 'AAAAC'),
 	(19, 'Nguyen', 'Van', 'Q', 'AAAAD'),
 	(20, 'Nguyen', 'Van', 'R', 'AAAAE');
-INSERT INTO REPORT (uuid, eSSN, StationID, Timestamp, Temperature, VeloX, VeloY, VeloZ) VALUES
-	(0, 15, 'AAAAA', '2024-11-16', 37, 4, 5, 8), (1, 10, 'AAAAI', '2024-11-15', 32, 4, 5, 8),
-	(16, 2, 'AAAAG', '2024-11-14', 36, NULL, NULL, NULL), (17, 7, 'AAAAI', '2024-11-15', NULL, 6, 4, 5),
-	(18, 15, 'AAAAC', '2024-11-16', 29, NULL, NULL, NULL), (19, 10, 'AAAAB', '2024-11-15', 32, 4, 5, 8); 
-INSERT INTO REPORT (uuid, eSSN, StationID) VALUES
-	(2, 6, 'AAAAB'), (3, 13, 'AAAAJ'),
-	(4, 7, 'AAAAC'), (5, 8, 'AAAAK'),
-	(6, 2, 'AAAAD'), (7, 5, 'AAAAL'),
-	(8, 1, 'AAAAE'), (9, 13, 'AAAAM'), 
-	(10, 3, 'AAAAF'), (11, 9, 'AAAAN'),
-	(12, 2, 'AAAAG'), (13, 11, 'AAAAO'), 
-	(14, 14, 'AAAAH'), (15, 6, 'AAAAP');
+
+--DELETE FROM REPORT;
+INSERT INTO REPORT (eSSN, StationID, Timestamp, Temperature, VeloX, VeloY, VeloZ) VALUES
+	(15, 'AAAAA', '2024-11-16', 37, 4, 5, 8), (10, 'AAAAI', '2024-11-15', 32, 4, 5, 8),
+	(2, 'AAAAG', '2024-11-14', 36, NULL, NULL, NULL), (7, 'AAAAI', '2024-11-15', NULL, 6, 4, 5),
+	(15, 'AAAAC', '2024-11-16', 29, NULL, NULL, NULL), (10, 'AAAAB', '2024-11-15', 32, 4, 5, 8); 
+INSERT INTO REPORT (eSSN, StationID) VALUES
+	(6, 'AAAAB'), (13, 'AAAAJ'),
+ 	(7, 'AAAAC'), (8, 'AAAAK'),
+	(2, 'AAAAD'), (5, 'AAAAL'),
+	(1, 'AAAAE'), (13, 'AAAAM'), 
+	(3, 'AAAAF'), (9, 'AAAAN'),
+	(2, 'AAAAG'), (11, 'AAAAO'), 
+	(14, 'AAAAH');
 INSERT INTO COLLABORATOR  VALUES
 	('Nguyen Van B', 'HCMUT', 14), ('Nguyen Van C', 'HCMUT', 6), ('Nguyen Van D', 'HCMUT', 10),
 	('Nguyen B', 'HCMUTE', 12), ('Nguyen C', 'HCMUTE', 8), ('Nguyen D', 'HCMUTE', 5),
 	('Van B', 'HCMUE', 9), ('Van C', 'HCMUE', 4), ('Van D', 'HCMUE', 6),
 	('B', 'HCMUS', 1), ('C', 'HCMUS', 2), ('D', 'HCMUS', 3);
--- TEST/SELECT DATA
--- SELECT *
--- 	FROM STATION;
--- DELETE DATA
--- DELETE FROM STATION CASCADE;
--- DELETE FROM EMPLOYEE CASCADE;
--- DELETE FROM PROVINCE CASCADE;
--- DELETE FROM REPORT CASCADE;
--- DELETE FROM COLLABORATION CASCADE;
 
--- CREATE VIEW emp_view AS
-SELECT * 
-FROM REPORT
+-- FUNCTION
+CREATE OR REPLACE FUNCTION wind_calculate(r_id INTEGER)
+	RETURNS FLOAT
+	AS
+	$body$
+	DECLARE
+		x FLOAT;
+		y FLOAT;
+		z FLOAT;
+	BEGIN
+		SELECT VeloX, VeloY, VeloZ INTO x, y, z	-- Get wind variables
+		FROM REPORT AS R
+		WHERE UUID = r_id;
+
+		IF x IS NULL OR y IS NULL OR z IS NULL THEN
+			--RAISE EXCEPTION 'Unable to calculate wind velocity. Wind variables are not entered.';
+			RETURN 0;
+		END IF;
+		
+		RETURN sqrt(x^2 + y^2 + z^2);
+	END;
+	$body$
+	LANGUAGE plpgsql;
+-- DROP FUNCTION wind_calculate(r_id INTEGER);
+-- TEST
+SELECT * FROM REPORT
+	WHERE uuid = 3;
+SELECT wind_calculate(3);	-- no wind
+SELECT * FROM REPORT
+	WHERE uuid = 1;
+SELECT wind_calculate(1);	-- no wind
+
+
+CREATE OR REPLACE FUNCTION report_in_day(_date DATE)
+	RETURNS TABLE(
+		o_Timestamp DATE,
+		o_Station CHAR,
+	 	o_temperature FLOAT,
+		o_Wind_Velocity FLOAT
+	)
+	AS
+	$body$
+	BEGIN
+		RETURN QUERY
+			SELECT Timestamp, StationID, temperature, wind_calculate(UUID)
+				FROM REPORT
+				WHERE Timestamp = _date;
+	END;
+	$body$
+	LANGUAGE plpgsql;
 	
+-- DROP FUNCTION report_in_day(_date DATE);
+-- TEST
+SELECT Timestamp, StationID AS Station, temperature, wind_calculate(UUID) AS Wind_Velocity
+	FROM REPORT
+	WHERE Timestamp = '2024-11-16';
+
+SELECT * FROM report_in_day('2024-11-16');
+-- SELECT wind_calculate(UUID) FROM REPORT;
+
+-- RAISE NOTICE 'Value: %', deletedContactId;
+
+-- TRIGGERS
+CREATE OR REPLACE FUNCTION wind_variables_check()
+	RETURNS TRIGGER
+	AS
+	$body$
+	DECLARE
+		x FLOAT;
+		y FLOAT;
+		z FLOAT;
+		other_var BOOLEAN;
+	BEGIN
+		SELECT VeloX, VeloY, VeloZ INTO x, y, z	-- Get wind variables
+		FROM REPORT AS R
+		WHERE UUID = new.UUID;
+
+		-- allow both 3 are null or has value	
+		IF x IS NULL AND y IS NULL AND z IS NULL THEN	-- if no wind
+			RETURN NULL;
+		ELSIF x IS NOT NULL AND y IS NOT NULL AND z IS NOT NULL THEN	-- if have wind
+			RETURN NULL;
+		ELSE
+			RAISE 'Unable to store data. Wind variables are not properly entered.';
+		END IF;
+	END;
+	$body$
+	LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER tr_wind_variables_check
+	AFTER INSERT OR UPDATE OF VeloX, VeloY, VeloZ
+	ON REPORT
+	FOR EACH ROW
+	EXECUTE FUNCTION wind_variables_check();
+
+call create_report(0, 'AAAAB', 27, 8, 5, NULL);
+call create_report(0, 'AAAAB', 27, NULL, NULL, NULL);
+
+-- CREATE PROCEDURE: for staff to update their information
+CREATE OR REPLACE PROCEDURE update_employee_data(
+	IN_SSN INTEGER,
+	IN_BDate Date,
+	IN_PhoneNumber	CHAR
+)
+AS
+$body$
+	BEGIN
+		IF IN_BDate IS NOT NULL THEN		-- Only allow update, not delete
+			UPDATE EMPLOYEE
+			SET BDate = IN_BDate
+			WHERE SSN = IN_SSN;
+		END IF;
+		IF IN_PhoneNumber IS NOT NULL THEN
+			UPDATE EMPLOYEE
+			SET PhoneNumber = IN_PhoneNumber
+			WHERE SSN = IN_SSN;
+		END IF;
+	END;
+$body$
+LANGUAGE plpgsql;
+-- TEST
+CALL update_employee_data(5, '1965-7-23', '0902378589');
+SELECT *
+	FROM EMPLOYEE
+	WHERE SSN = 5;
+
+-- PROCEDURE: to write report
+CREATE OR REPLACE PROCEDURE create_report(
+	_emp INTEGER,		-- SSN
+	_station CHAR,
+	_temp INTEGER,
+	_veloX FLOAT,
+	_veloY FLOAT,
+	_veloZ FLOAT
+)
+AS
+$body$
+	BEGIN
+		INSERT INTO REPORT (timestamp, eSSN, StationID, Temperature, VeloX, VeloY, VeloZ) VALUES
+			(current_date, _emp, _station, _temp, _veloX, _veloY, _veloZ);
+	END;
+$body$
+LANGUAGE plpgsql;
+-- TEST
+call create_report(0, 'AAAAE', 27, 8, 5, 12);
+
+SELECT * FROM REPORT WHERE essn = 0;
+-- DELETE FROM REPORT
+-- 	WHERE uuid = 23;
+		-- SELECT VeloX, VeloY, VeloZ	-- Get wind variables
+		-- FROM REPORT AS R
+		-- WHERE UUID = 23;
+
+
+
+-- INDEX
+SELECT COUNT(*) FROM REPORT;
+
+CREATE INDEX report_idx
+	ON REPORT(StationID);
+
+DROP INDEX report_idx;
+
+SELECT * FROM REPORT WHERE StationID = 'AAAAG';
