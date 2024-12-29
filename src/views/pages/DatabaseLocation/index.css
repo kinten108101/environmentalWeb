@@ -1,0 +1,8 @@
+.sourcelist {
+	background: rgba(0,0,0,0.1);
+	margin-bottom: 12px;
+}
+
+.sourcelist button {
+	display: flex;
+}

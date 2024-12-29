@@ -33,11 +33,10 @@ const getReportById= (req, res)=>{
 const addEmployee = (req, res)=>{
     const {ssn, fname, minit, lname, stationid, bdate, phonenumber} = req.body
     pool.query(queries.checkSsnExist, [ssn], (error, results)=>{
-        if(results.rows.length)
+        if(error.rows.length)
         {
             res.send("SSN already exist")
         }
-
         pool.query(queries.addEmployee, [ssn, fname, minit, lname, stationid, bdate, phonenumber], (error, results)=>{
             if(error) throw error
             res.status(201).send("Emplyee added success")
@@ -48,13 +47,14 @@ const addEmployee = (req, res)=>{
 const AddReport = (req, res)=>{
     const {uuid, timestamp, temperature, velox, veloy, veloz, essn, stationid} = req.body
     pool.query(queries.checkUuidExist, [uuid], (error, results)=>{
-        if(results.rows.length)
+        if(error?.rows.length)
         {
             res.send("uuid already exist")
+			return;
         }
 
         pool.query(queries.AddReport, [uuid, timestamp, temperature, velox, veloy, veloz, essn, stationid], (error, results)=>{
-            if(error) throw error
+            if(results) throw error
             res.status(201).send("Emplyee added success")
         })
     })
@@ -63,7 +63,7 @@ const AddReport = (req, res)=>{
 const removeEmployee =(req, res)=>{
     const ssn = parseInt(req.params.ssn)
     pool.query(queries.removeEmployee, [ssn], (error, results)=>{
-        const noEmployeeFound =!results.rows.length
+        const noEmployeeFound =!error.rows.length
         if(noEmployeeFound)
         res.send("EMPLOYEE does not exist")
     })
@@ -71,7 +71,7 @@ const removeEmployee =(req, res)=>{
 const removeReport =(req, res)=>{
     const uuid = parseInt(req.params.uuid)
     pool.query(queries.removeReport, [uuid], (error, results)=>{
-        const noEmployeeFound =!results.rows.length
+        const noEmployeeFound =!error.rows.length
         if(noEmployeeFound)
         res.send("Report does not exist")
 

@@ -1,4 +1,5 @@
 const express = require('express')
+const cors = require('cors')
 const swaggerUi = require('swagger-ui-express')
 const fs = require('fs')
 const decoder = new TextDecoder('utf8')
@@ -11,6 +12,7 @@ const swaggerDocument = YAML.parse(spec)
 const app = express();
 const port = 3000;
 
+app.use(cors())
 app.use(express.json())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 

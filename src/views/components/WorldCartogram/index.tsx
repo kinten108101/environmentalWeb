@@ -51,6 +51,7 @@ const WorldCartogram = function (
 	/** Handle when lazy loading is finished */
 	onFinishedLoading?: () => void;
 	onDataChange?: (progress: number, config: StyleConfig) => void;
+	style?: React.CSSProperties;
 }) {
 	const container = useRef<HTMLDivElement>(null);
 
@@ -107,6 +108,7 @@ const WorldCartogram = function (
 	return (
 		<div 
 			ref={container}
+			style={otherProps.style}
 		>
 			<Countries />
 		</div>

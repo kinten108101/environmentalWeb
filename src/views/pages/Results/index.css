@@ -11,3 +11,21 @@
 	justify-content: center;
 }
 
+#switcher {
+	background: white;
+	border-radius: 12px;
+	padding: 0px 8px;
+	margin: 4px 8px;
+}
+
+#switcher[data-source="difference"] > button:nth-child(2) {
+	color: green;
+}
+
+#switcher[data-source="absolute"] > button:nth-child(1) {
+	color: green;
+}
+
+#switcher > *:not(:nth-child(1)) {
+	margin-left: 16px;
+}

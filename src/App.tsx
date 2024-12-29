@@ -12,6 +12,7 @@ import HealthChecker from "./controllers/providers/HealthChecker";
 import Loading from "./views/pages/Loading";
 import RequireAuth from "./controllers/providers/RequireAuth";
 import DatabaseInfoCache from "./controllers/providers/DatabaseInfoCache";
+import ManualInput from "./views/pages/ManualInput";
 
 const AppRoutes = function () {
 	return (
@@ -31,6 +32,7 @@ const AppRoutes = function () {
 				</RequireAuth>
 			}/>
 			<Route path="/loading" element={<Loading/>}/>
+			<Route path="/manual-input" element={<ManualInput />}/>
 		</Routes>
 	);
 };
